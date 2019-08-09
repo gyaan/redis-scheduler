@@ -34,12 +34,7 @@ func task() {
 	//close connection at end
 	defer client.Close()
 
-	//arr := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}  //this isn't work
-	//client.RPush("items",arr)
-	//client.Set("items", arr, 0)
-	//prepare list
-
-	//display list
+	//get current list
 	s, err := client.LRange("items", 0, -1).Result()
 
 	if err != nil {
@@ -57,14 +52,14 @@ func task() {
 
 	fmt.Println("current processing list:", strings)
 
-	//remove three elements from left side
-	//find out a function to multiple element remove from the starting
+	//remove three elements from front
+	//todo find out a function to multiple element remove from the starting
 	for i := 0; i < len(strings); i++ {
 		client.LPop("items")
 	}
 
 	//push three elements to last
-	//find function to push multiple element in the list
+	//todo find function to push multiple element in the list
 	for i := 0; i < len(strings); i++ {
 		client.RPush("items", strings[i])
 	}

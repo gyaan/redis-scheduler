@@ -29,6 +29,38 @@ Lets create a list called circular_list_for_update which holds all the records f
 
 //code for creating circular list for update and chunking the records
 
+```
+//get current list
+	s, err := client.LRange("items", 0, -1).Result()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("current list:", s)
+
+	//get the three element from last
+	strings, err := client.LRange("items", 0, 2).Result()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("current processing list:", strings)
+
+	//remove three elements from front
+	//todo find out a function to multiple element remove from the starting
+	for i := 0; i < len(strings); i++ {
+		client.LPop("items")
+	}
+
+	//push three elements to last
+	//todo find function to push multiple element in the list
+	for i := 0; i < len(strings); i++ {
+		client.RPush("items", strings[i])
+	}
+```
+
 //code for processing the current list records
 
 
