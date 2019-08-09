@@ -61,8 +61,20 @@ Lets create a list called circular_list_for_update which holds all the records f
 	}
 ```
 
-//code for processing the current list records
+Here is processing list output
+```
+current list: [7 8 9 10 1 2 3 4 5 6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10]
+current processing list: [7 8 9]
+current list: [10 1 2 3 4 5 6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9]
+current processing list: [10 1 2]
+current list: [3 4 5 6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9 10 1 2]
+current processing list: [3 4 5]
+current list: [6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9 10 1 2 3 4 5]
+current processing list: [6 1 2]
+current list: [3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9 10 1 2 3 4 5 6 1 2]
+current processing list: [3 4 5]
 
+```
 
 Records update process with redis circular queue is fast and less error prone. Fits for worker environment and easily scalable.
 
