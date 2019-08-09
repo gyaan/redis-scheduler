@@ -12,11 +12,13 @@ func TestGetClient(t *testing.T) {
 		name string
 		want *redis.Client
 	}{
-		// TODO: Add test cases.
+		{"test1",GetClient()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetClient(); !reflect.DeepEqual(got, tt.want) {
+
+			// no singleton implemented so compare string of redis client obj
+			if got := GetClient(); !reflect.DeepEqual(got.String(), tt.want.String()) {
 				t.Errorf("GetClient() = %v, want %v", got, tt.want)
 			}
 		})
