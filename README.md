@@ -60,20 +60,25 @@ Lets create a list called circular_list_for_update which holds all the records f
 		client.RPush("items", strings[i])
 	}
 ```
-
 Here is processing list output
-```
-current list: [7 8 9 10 1 2 3 4 5 6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10]
-current processing list: [7 8 9]
-current list: [10 1 2 3 4 5 6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9]
-current processing list: [10 1 2]
-current list: [3 4 5 6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9 10 1 2]
-current processing list: [3 4 5]
-current list: [6 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9 10 1 2 3 4 5]
-current processing list: [6 1 2]
-current list: [3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 7 8 9 10 1 2 3 4 5 6 1 2]
-current processing list: [3 4 5]
 
+```
+current list: [1 2 3 4 5 6 7 8 9 10]
+current processing list: [1 2 3]
+current list: [4 5 6 7 8 9 10 1 2 3]
+current processing list: [4 5 6]
+current list: [7 8 9 10 1 2 3 4 5 6]
+current processing list: [7 8 9]
+current list: [10 1 2 3 4 5 6 7 8 9]
+current processing list: [10 1 2]
+current list: [3 4 5 6 7 8 9 10 1 2]
+current processing list: [3 4 5]
+current list: [6 7 8 9 10 1 2 3 4 5]
+current processing list: [6 7 8]
+current list: [9 10 1 2 3 4 5 6 7 8]
+current processing list: [9 10 1]
+current list: [2 3 4 5 6 7 8 9 10 1]
+current processing list: [2 3 4]
 ```
 
 Records update process with redis circular queue is fast and less error prone. Fits for worker environment and easily scalable.
