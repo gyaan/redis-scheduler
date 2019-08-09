@@ -1,18 +1,20 @@
 package main
 
 import (
+	"gotest.tools/assert"
 	"reflect"
 	"testing"
 
 	"github.com/go-redis/redis"
 )
 
+//test get client
 func TestGetClient(t *testing.T) {
 	tests := []struct {
 		name string
 		want *redis.Client
 	}{
-		{"test1",GetClient()},
+		{"test1", GetClient()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -23,4 +25,10 @@ func TestGetClient(t *testing.T) {
 			}
 		})
 	}
+}
+
+//test ping only for successful connection
+func TestPing(t *testing.T) {
+	ping := Ping()
+	assert.Assert(t,ping,nil)
 }

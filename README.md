@@ -33,3 +33,9 @@ Lets create a list called circular_list_for_update which holds all the records f
 
 
 Records update process with redis circular queue is fast and less error prone. Fits for worker environment and easily scalable.
+
+##Run project
+
+```go build```
+
+```./redis-scheduler```
