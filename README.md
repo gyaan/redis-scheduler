@@ -29,7 +29,7 @@ Lets create a list called circular_list_for_update which holds all the records f
 
 //code for creating circular list for update and chunking the records
 
-```
+```golang
 //get current list
 	s, err := client.LRange("items", 0, -1).Result()
 
