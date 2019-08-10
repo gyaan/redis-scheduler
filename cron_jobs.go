@@ -28,6 +28,12 @@ func createInitialList(key string) {
 //task to run on each interval
 func task() {
 
+	//chunk size
+
+	chunkSize := 3
+	circularListName := "circular_list_for_update"
+	currentListName := "current_list_for_update"
+
 	//get redis client
 	client := GetClient()
 
@@ -35,7 +41,7 @@ func task() {
 	defer client.Close()
 
 	//get current list
-	s, err := client.LRange("items", 0, -1).Result()
+	s, err := client.LRange(circularListName, 0, -1).Result()
 
 	if err != nil {
 		fmt.Println(err)
@@ -44,24 +50,34 @@ func task() {
 	fmt.Println("current list:", s)
 
 	//get the three element from last
-	strings, err := client.LRange("items", 0, 2).Result()
-
+	//current_list_for_update
+	strings, err := client.LRange(circularListName, 0, int64(chunkSize-1)).Result()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println("current processing list:", strings)
+	//remove old current list
+	client.Del(currentListName)
+
+	//create current_list_for_update for update
+	//this list can be shared with multiple worker or job
+	for i := 0; i < chunkSize; i++ {
+		client.RPush(currentListName, strings[i])
+	}
+
+	result, err := client.LRange(currentListName,0,int64(chunkSize-1)).Result()
+	fmt.Println("current processing list:", result)
 
 	//remove three elements from front
 	//todo find out a function to multiple element remove from the starting
 	for i := 0; i < len(strings); i++ {
-		client.LPop("items")
+		client.LPop(circularListName)
 	}
 
 	//push three elements to last
 	//todo find function to push multiple element in the list
 	for i := 0; i < len(strings); i++ {
-		client.RPush("items", strings[i])
+		client.RPush(circularListName, strings[i])
 	}
 }
 
@@ -76,7 +92,7 @@ func runJobs() {
 		fmt.Println("unable to connect to redis")
 	} else {
 		//create the list
-		createInitialList("items")
+		createInitialList("circular_list_for_update")
 
 		//schedule a job
 		s := gocron.NewScheduler()
