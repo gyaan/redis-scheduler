@@ -2,6 +2,7 @@
 
 [![codecov](https://codecov.io/gh/gyaan/redis-scheduler/branch/master/graph/badge.svg)](https://codecov.io/gh/gyaan/redis-scheduler)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gyaan/redis-scheduler)](https://goreportcard.com/report/github.com/gyaan/redis-scheduler)
+[![GoDoc Widget]][GoDoc]
 
 In the software development we interact with many platform and legacy systems. Some of the old system are not capable to handle huge server requests, so we have to create a robust system using new tech and system design which handles all the request but still we need data from the old systems and that should be in sync with new system. 
     So let's say we have one million records and we want to update them regular bases. Lets see what can be the problem.
