@@ -24,4 +24,3 @@ func Test_createInitialList(t *testing.T) {
 		})
 	}
 }
-

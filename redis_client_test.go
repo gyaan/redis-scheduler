@@ -30,5 +30,5 @@ func TestGetClient(t *testing.T) {
 //test ping only for successful connection
 func TestPing(t *testing.T) {
 	ping := Ping()
-	assert.Assert(t,ping,nil)
+	assert.Assert(t, ping, nil)
 }

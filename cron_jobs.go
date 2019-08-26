@@ -65,7 +65,7 @@ func task() {
 		client.RPush(currentListName, strings[i])
 	}
 
-	result, err := client.LRange(currentListName,0,int64(chunkSize-1)).Result()
+	result, err := client.LRange(currentListName, 0, int64(chunkSize-1)).Result()
 	fmt.Println("current processing list:", result)
 
 	//remove three elements from front
