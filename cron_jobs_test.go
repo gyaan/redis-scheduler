@@ -4,6 +4,7 @@ import (
 	"gotest.tools/assert"
 	"strings"
 	"testing"
+	"github.com/gyaan/redis-scheduler/redisclient"
 )
 
 func Test_createInitialList(t *testing.T) {
@@ -14,7 +15,7 @@ func Test_createInitialList(t *testing.T) {
 			"1 2 3 4 5 6 7 8 9 10",
 		},
 	}
-	client := GetClient()
+	client := redisclient.GetClient()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			createInitialList("testItems")
