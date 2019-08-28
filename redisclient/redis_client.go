@@ -1,3 +1,4 @@
+// redisclient provides the redis connection
 package redisclient
 
 import (
