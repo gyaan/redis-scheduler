@@ -5,7 +5,7 @@ import (
 	"github.com/jasonlvhit/gocron"
 )
 
-//create list to process
+//createInitialList create list to process
 func createInitialList(key string) {
 	//set the initial list
 	client := GetClient()
@@ -25,7 +25,7 @@ func createInitialList(key string) {
 	client.RPush(key, 10)
 }
 
-//task to run on each interval
+//task task to run on each interval
 func task() {
 
 	//chunk size

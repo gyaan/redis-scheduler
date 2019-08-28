@@ -5,7 +5,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
-//get redis client
+//GetClient get redis client
 func GetClient() *redis.Client {
 
 	client := redis.NewClient(&redis.Options{
@@ -16,7 +16,7 @@ func GetClient() *redis.Client {
 	return client
 }
 
-//check redis connection
+//Ping check redis connection
 func Ping() error {
 	client := GetClient()
 	do, err := client.Ping().Result()
