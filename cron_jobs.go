@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/jasonlvhit/gocron"
+	"github.com/gyaan/redis-scheduler/redisclient"
 )
 
 //createInitialList create list to process
 func createInitialList(key string) {
 	//set the initial list
-	client := GetClient()
+	client := redisclient.GetClient()
 
 	//close connection at end
 	defer client.Close()
@@ -35,7 +36,7 @@ func task() {
 	currentListName := "current_list_for_update"
 
 	//get redis client
-	client := GetClient()
+	client := redisclient.GetClient()
 
 	//close connection at end
 	defer client.Close()
@@ -86,7 +87,7 @@ func task() {
 func runJobs() {
 
 	//verify redis connection is available
-	ping := Ping()
+	ping := redisclient.Ping()
 
 	if ping != nil {
 		fmt.Println("unable to connect to redis")

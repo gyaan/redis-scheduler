@@ -1,4 +1,4 @@
-package main
+package redisclient
 
 import (
 	"gotest.tools/assert"
