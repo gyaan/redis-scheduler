@@ -1,4 +1,4 @@
-module github.com/gyaan/redis-scheduler
+module redis-scheduler
 
 go 1.12
 
@@ -10,5 +10,6 @@ require (
 	github.com/onsi/gomega v1.7.0 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
+	gopkg.in/yaml.v2 v2.2.2 // indirect
 	gotest.tools v2.2.0+incompatible
 )

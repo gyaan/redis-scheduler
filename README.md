@@ -1,108 +1,120 @@
-# redis-scheduler
+# Redis Scheduler
 
-[![codecov](https://codecov.io/gh/gyaan/redis-scheduler/branch/master/graph/badge.svg)](https://codecov.io/gh/gyaan/redis-scheduler)
-[![Go Report Card](https://goreportcard.com/badge/github.com/gyaan/redis-scheduler)](https://goreportcard.com/report/github.com/gyaan/redis-scheduler)
-[![GoDocWidget]][GoDocReference]
+<div align="center">
+  <a href="https://github.com/gyaan/redis-scheduler">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
 
-[GoDocWidget]: https://godoc.org/github.com/gyaan/redis-scheduler?status.svg
-[GoDocReference]:https://godoc.org/github.com/gyaan/redis-scheduler 
+  <h3 align="center">Redis Scheduler</h3>
 
-In the software development we interact with many platform and legacy systems. Some of the old system are not capable to handle huge server requests, so we have to create a robust system using new tech and system design which handles all the request but still we need data from the old systems and that should be in sync with new system. 
-    So let's say we have one million records and we want to update them regular bases. Lets see what can be the problem.
-1. We can’t update them in single process we need to chunking and then update the records.
-2. We need to rotate the records as well in the circular way.
-3. We need to add the new records as well for update.
-4. If we want to update them in a certain periods then we need to increase the parallel workers if number of records are increasing regularly.
+  <p align="center">
+    A Redis-based scheduler in Go.
+    <br />
+    <a href="https://github.com/gyaan/redis-scheduler"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/gyaan/redis-scheduler">View Demo</a>
+    ·
+    <a href="https://github.com/gyaan/redis-scheduler/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/gyaan/redis-scheduler/issues">Request Feature</a>
+  </p>
+</div>
 
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-So let’s take example of CRM system. Where we have transactions of user and we want to display those transactions to a new system. For this we need to get transactions regularly bases from CRM. 
+## About The Project
 
-We would have implemented like below if have a mysql table for user.
+This project is a demonstration of a Redis-based scheduler in Go. It's designed to handle a large number of records that need to be updated regularly in a circular fashion.
 
-1. Create a flag in the user tables. Which can have the following values 
+### Built With
 
-      1. Updated
-      2. Updating
-      3. Pending
-                
-So  by default lets assume its value is pending. When we choose the user for update status will be updating (so that no conflicts in parallel processing), after update it will be updated and when all users are updated we have to make them again pending.
+* [Go](https://golang.org/)
+* [Redis](https://redis.io/)
+* [gocron](https://github.com/jasonlvhit/gocron)
+* [go-redis](https://github.com/go-redis/redis)
+* [testify](https://github.com/stretchr/testify)
 
-To implement above thing we have to use three database queries and database lock while choosing the users for updates. Which will be a bit slow and difficult to scale it for millions of users(records).
+## Getting Started
 
-Here comes Redis. We all know redis is in memory cache, fast and easy to implement but Redis has certain feature which fits for such situations.  Let’s try to implement an update records system using Redis. 
+To get started with this project, you'll need to have Go and Redis installed on your machine.
 
-Redis has list data type and can be implemented like queue and we can perform certain operation in it like push, pop, lpush (left push), rpush(right push), lpop(left pop), rpop (right pop) etc etc.
+### Prerequisites
 
-Lets create a list called circular_list_for_update which holds all the records for update and another list called current_list_for_update which holds the records which we want to update in specific time (let's say every hours, half hours). Second list is nothing just chunk of records for update process.
+* Go
+* Redis
 
-//code for creating circular list for update and chunking the records
+### Installation
 
-```golang
-//get current list
-	s, err := client.LRange(circularListName, 0, -1).Result()
+1. Clone the repo
+   ```sh
+   git clone https://github.com/gyaan/redis-scheduler.git
+   ```
+2. Install Go packages
+   ```sh
+   go mod tidy
+   ```
 
-	if err != nil {
-		fmt.Println(err)
-	}
+## Usage
 
-	fmt.Println("current list:", s)
+Use this project to understand how to build a Redis-based scheduler in Go.
 
-	//get the three element from last
-	//current_list_for_update
-	strings, err := client.LRange(circularListName, 0, int64(chunkSize-1)).Result()
-	if err != nil {
-		fmt.Println(err)
-	}
+_For more examples, please refer to the [Documentation](https://github.com/gyaan/redis-scheduler)_
 
-	//remove old current list
-	client.Del(currentListName)
+## Roadmap
 
-	//create current_list_for_update for update
-	//this list can be shared with multiple worker or job
-	for i := 0; i < chunkSize; i++ {
-		client.RPush(currentListName, strings[i])
-	}
+- [ ] Add more tests
+- [ ] Add more features
 
-	result, err := client.LRange(currentListName,0,int64(chunkSize-1)).Result()
-	fmt.Println("current processing list:", result)
+See the [open issues](https://github.com/gyaan/redis-scheduler/issues) for a full list of proposed features (and known issues).
 
-	//remove three elements from front
-	//todo find out a function to multiple element remove from the starting
-	for i := 0; i < len(strings); i++ {
-		client.LPop(circularListName)
-	}
+## Contributing
 
-	//push three elements to last
-	//todo find function to push multiple element in the list
-	for i := 0; i < len(strings); i++ {
-		client.RPush(circularListName, strings[i])
-	}
-```
-Here is processing list output
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-```
-current list: [1 2 3 4 5 6 7 8 9 10]
-current processing list: [1 2 3]
-current list: [4 5 6 7 8 9 10 1 2 3]
-current processing list: [4 5 6]
-current list: [7 8 9 10 1 2 3 4 5 6]
-current processing list: [7 8 9]
-current list: [10 1 2 3 4 5 6 7 8 9]
-current processing list: [10 1 2]
-current list: [3 4 5 6 7 8 9 10 1 2]
-current processing list: [3 4 5]
-current list: [6 7 8 9 10 1 2 3 4 5]
-current processing list: [6 7 8]
-current list: [9 10 1 2 3 4 5 6 7 8]
-current processing list: [9 10 1]
-current list: [2 3 4 5 6 7 8 9 10 1]
-current processing list: [2 3 4]
-```
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 
-Records update process with redis circular queue is fast and less error prone. Fits for worker environment and easily scalable.
+Don't forget to give the project a star! Thanks again!
 
-## Run project
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-1. ```go build```
+## License
 
-2. ```./redis-scheduler```
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Contact
+
+Your Name - [@your_twitter](https://twitter.com/your_twitter) - email@example.com
+
+Project Link: [https://github.com/gyaan/redis-scheduler](https://github.com/gyaan/redis-scheduler)
+
+## Acknowledgments
+
+* [othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template)
